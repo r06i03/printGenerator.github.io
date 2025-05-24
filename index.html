@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>課題1</title>
+  
+  <!-- marked.js for Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- GitHub風Markdownデザイン -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css" />
+
+  <!-- MathJax: LaTeX 数式を表示 -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+  <!-- html2pdf.js for PDF変換 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background-color: #f7f7f7;
+    }
+    .content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 800px;
+      margin: auto;
+    }
+    #md {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+    <div class="content">
+        <h1>課題1</h1>
+        <button onclick="generateMarkdown()">Markdownを生成</button>
+        <button onclick="downloadPdf()">ダウンロード</button>
+        <h2>プレビュー</h2>
+        <div id ="md">
+        <div id="preview" class="markdown-body"></div>
+        </div>
+    </div>
+    <script>
+      let currentMarkdown;
+
+      function generateMarkdown() {
+
+        currentMarkdown = `# 課題1 
+
+次を満たす等差数列の一般項を求め、最初の5項を求めなさい。
+## 問1.1
+### (1) 初項 ${Math.floor(Math.random() * 20) - 9}、公差 ${Math.floor(Math.random() * 20) - 9}
+<br>
+<br>
+<br>
+
+### (2) 初項 ${Math.floor(Math.random() * 20) - 9}、公差 ${Math.floor(Math.random() * 20) - 9}
+<br>
+<br>
+<br>
+
+### (3) 第${Math.floor(Math.random() * 5)+1}項が ${Math.floor(Math.random() * 20) - 9}、第${Math.floor(Math.random() * 5)+6}項が ${Math.floor(Math.random() * 20) - 9}
+<br>
+<br>
+<br>
+
+### (4) 第${Math.floor(Math.random() * 5)+1}項が ${Math.floor(Math.random() * 20) - 9}、第${Math.floor(Math.random() * 5)+6}項が ${Math.floor(Math.random() * 20) - 9}
+<br>
+<br>
+<br>
+`;
+
+        const html = marked.parse(currentMarkdown);
+        const preview = document.getElementById('preview');
+        preview.innerHTML = html;
+
+        // 数式の再レンダリング
+        if (window.MathJax) {
+          MathJax.typesetPromise([preview]);
+        }
+    }
+    function downloadPdf() {
+      const preview = document.getElementById('preview');
+      
+      // PDFオプション（フォントサイズや余白調整可）
+      const opt = {
+        margin:       0.5,
+        filename:     '課題1.pdf',
+        image:        { type: 'png', quality: 1.0 },
+        html2canvas:  { scale: 3,letterRendering	: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait',compress: true,x:0,y:0 }
+      };
+
+      // MathJaxの描画が終わったらPDF生成
+      MathJax.typesetPromise([preview]).then(() => {
+        html2pdf().from(preview).set(opt).save();
+      });
+    }
+    </script>
+</body>
+</html>
